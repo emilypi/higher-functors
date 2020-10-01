@@ -1,0 +1,76 @@
+cabal-version:   2.4
+name:            higher-functors
+version:         0.1.0.0
+synopsis:        Higher-order functors
+description:     Higher-order categorical structures
+homepage:        https://github.com/emilypi/higher-functors
+bug-reports:     https://github.com/emilypi/higher-functors/issues
+license:         BSD-3-Clause
+license-file:    LICENSE
+author:          Emily Pillmore
+maintainer:      emilypi@cohomolo.gy
+copyright:       (c) 2020 Emily Pillmore <emilypi@cohomolo.gy>
+category:        Data
+build-type:      Simple
+extra-doc-files:
+  CHANGELOG.md
+  README.md
+
+tested-with:     GHC ==8.2.2 || ==8.4.4 || ==8.6.5 || ==8.8.4 || ==8.10.2
+
+source-repository head
+  type:     git
+  location: https://github.com/emilypi/higher-functors.git
+
+library
+  exposed-modules:  Data.HFunctor
+
+  -- Data.HAdjunction
+  -- Data.HApplicative
+  -- Data.HApplicative.Trans
+  -- Data.HCofree
+  -- Data.HComonad
+  -- Data.HComonad.Trans
+  -- Data.HCompose
+  -- Data.HConst
+  -- Data.HContravariant
+  -- Data.HContravariant.Trans
+  -- Data.HCoyoneda
+  -- Data.HDistributive
+  -- Data.HDistributive.Trans
+  -- Data.HFix
+  -- Data.HFoldable
+  -- Data.HFoldable.Trans
+  -- Data.HFree
+  -- Data.HFunctor.Trans
+  -- Data.HFunctor.Trans.Applied
+  -- Data.HLan
+  -- Data.HMonad
+  -- Data.HMonad.Trans
+  -- Data.HProfunctor
+  -- Data.HRan
+  -- Data.HRepresentable
+  -- Data.HTraversable
+  -- Data.HTraversable.Trans
+  -- Data.HYoneda
+  -- Data.NaturalTransformation
+
+  -- other-modules:
+  -- other-extensions:
+  build-depends:
+    , adjunctions
+    , base          >=4.10
+    , comonad
+    , distributive
+    , profunctors
+
+  hs-source-dirs:   src
+  default-language: Haskell2010
+  ghc-options:      -Wall
+
+test-suite higher-functors-test
+  default-language: Haskell2010
+  type:             exitcode-stdio-1.0
+  hs-source-dirs:   test
+  main-is:          MyLibTest.hs
+  build-depends:    base >=4.10
