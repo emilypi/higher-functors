@@ -36,10 +36,15 @@ type role NIso nominal nominal
 data NIso f g where
   NIso :: (f ~> g) -> (g ~> f) -> NIso f g
 
-type HCompose :: ((* -> *) -> * -> *) -> (* -> * -> *) -> * -> * -> *
+type HCompose
+  :: ((* -> *) -> * -> *)
+  -> ((* -> *) -> * -> *)
+  -> (* -> *)
+  -> *
+  -> *
 type role HCompose nominal nominal nominal nominal
-newtype HCompose f g a b where
-  HCompose :: f (g a) b -> HCompose f g a b
+newtype HCompose t u f a where
+  HCompose :: t (u f) a -> HCompose t u f a
 
 type HConst :: (* -> *) -> (* -> *) -> *
 type role HConst nominal phantom
@@ -60,6 +65,12 @@ type HFix :: ((* -> *) -> * -> *) -> * -> *
 type role HFix nominal nominal
 newtype HFix f i where
   HFix :: { unHFix :: f (HFix f) i } -> HFix f i
+
+-- -------------------------------------------------------------------- --
+-- Higher Optics? tl;dr dunno, haven't thought too hard about it.
+
+type HTraversal s t a b = forall u . HApplicative u => (a ~> u b) -> s ~> u t
+type HLens s t a b = forall u. HFunctor u => (a ~> u b) -> s ~> u t
 
 -- -------------------------------------------------------------------- --
 -- Classes
