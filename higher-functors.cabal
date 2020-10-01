@@ -23,43 +23,49 @@ source-repository head
   location: https://github.com/emilypi/higher-functors.git
 
 library
-  exposed-modules:  Data.HFunctor
+  exposed-modules:
+    Data.HAdjunction
+    Data.HApplicative
+    Data.HContravariant
+    Data.HDistributive
+    Data.HFunctor
+    Data.HFunctor.Trans
+    Data.HMonad
+    Data.HTraversable
+    Data.NaturalTransformation
 
-  -- Data.HAdjunction
-  -- Data.HApplicative
   -- Data.HApplicative.Trans
   -- Data.HCofree
   -- Data.HComonad
   -- Data.HComonad.Trans
   -- Data.HCompose
   -- Data.HConst
-  -- Data.HContravariant
+  --
   -- Data.HContravariant.Trans
   -- Data.HCoyoneda
-  -- Data.HDistributive
+  --
   -- Data.HDistributive.Trans
   -- Data.HFix
   -- Data.HFoldable
   -- Data.HFoldable.Trans
   -- Data.HFree
-  -- Data.HFunctor.Trans
+
   -- Data.HFunctor.Trans.Applied
   -- Data.HLan
-  -- Data.HMonad
+  --
   -- Data.HMonad.Trans
   -- Data.HProfunctor
   -- Data.HRan
   -- Data.HRepresentable
-  -- Data.HTraversable
+  --
   -- Data.HTraversable.Trans
   -- Data.HYoneda
-  -- Data.NaturalTransformation
 
   -- other-modules:
   -- other-extensions:
   build-depends:
     , adjunctions
-    , base          >=4.10
+    , base           >=4.10
     , comonad
     , contravariant
     , distributive
