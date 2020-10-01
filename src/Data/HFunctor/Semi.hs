@@ -2,8 +2,8 @@
 {-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE DefaultSignatures #-}
 {-# LANGUAGE RankNTypes #-}
-module Data.HFunctor.Trans
-( FunctorT(..)
+module Data.HFunctor.Semi
+( SemiHFunctor(..)
 , Applied(..)
 , mapIdentityT
 ) where
@@ -17,22 +17,26 @@ import Data.Proxy
 import GHC.Generics
 
 
-class FunctorT t where
+-- | 'SemiHFunctor's are "1 and a 1/2" functors from the 2-category of Haskell functors
+-- to the 1-category of Haskell types. For a true Functor on Functors, see
+-- 'Data.HFunctor.HFunctor'.
+--
+class SemiHFunctor t where
   fmapT :: (f ~> g) -> t f -> t g
-  default fmapT :: (Generic1 t, FunctorT (Rep1 t)) => (f ~> g) -> t f -> t g
+  default fmapT :: (Generic1 t, SemiHFunctor (Rep1 t)) => (f ~> g) -> t f -> t g
   fmapT f = to1 . fmapT f . from1
   {-# minimal fmapT #-}
 
 newtype Applied a f = Applied { runApplied :: f a }
 
-instance FunctorT (Applied a) where
+instance SemiHFunctor (Applied a) where
   fmapT f = Applied . f . runApplied
 
-instance FunctorT Proxy where
+instance SemiHFunctor Proxy where
   fmapT _ Proxy = Proxy
 
-instance FunctorT (Const a) where
+instance SemiHFunctor (Const a) where
   fmapT _ = Const . getConst
 
-mapIdentityT :: FunctorT t => (forall x. f x -> x) -> t f -> t Identity
+mapIdentityT :: SemiHFunctor t => (forall x. f x -> x) -> t f -> t Identity
 mapIdentityT f = fmapT (Identity . f)

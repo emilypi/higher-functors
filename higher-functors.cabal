@@ -29,9 +29,10 @@ library
     Data.HContravariant
     Data.HDistributive
     Data.HFunctor
-    Data.HFunctor.Trans
+    Data.HFunctor.Semi
     Data.HMonad
     Data.HTraversable
+    Data.HTraversable.Semi
     Data.NaturalTransformation
 
   -- Data.HApplicative.Trans
@@ -49,8 +50,6 @@ library
   -- Data.HFoldable
   -- Data.HFoldable.Trans
   -- Data.HFree
-
-  -- Data.HFunctor.Trans.Applied
   -- Data.HLan
   --
   -- Data.HMonad.Trans

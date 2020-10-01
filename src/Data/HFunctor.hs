@@ -19,10 +19,8 @@ module Data.HFunctor where
 
 import Control.Comonad
 
-import Data.Functor.Contravariant
-import Data.Functor.Contravariant.Divisible
 import Data.NaturalTransformation
-import Data.Void (Void)
+
 
 -- -------------------------------------------------------------------- --
 -- Data
@@ -67,7 +65,8 @@ class HFunctor t where
   hmap :: (f ~> g) -> (t f ~> t g)
   {-# minimal hmap #-}
 
-
+hhoist :: (HFunctor t, HFunctor u) => (forall k. t k ~> u k) -> t f ~> u f
+hhoist = ($)
 
 class HFunctor t => HComonad t where
   hcopure :: t g ~> g
