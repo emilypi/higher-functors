@@ -61,6 +61,7 @@ library
     , adjunctions
     , base          >=4.10
     , comonad
+    , contravariant
     , distributive
     , profunctors
 

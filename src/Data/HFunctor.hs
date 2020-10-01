@@ -1,3 +1,4 @@
+{-# language ConstraintKinds #-}
 {-# language GADTs #-}
 {-# language KindSignatures #-}
 {-# language MultiParamTypeClasses #-}
@@ -10,7 +11,14 @@
 {-# language TypeOperators #-}
 module Data.HFunctor where
 
+
 import Control.Comonad
+
+import Data.Functor.Contravariant
+import Data.Functor.Contravariant.Divisible
+import Data.Profunctor
+import Data.Void (Void)
+
 
 -- -------------------------------------------------------------------- --
 -- Data
@@ -28,9 +36,7 @@ type role NIso nominal nominal
 data NIso f g where
   NIso :: (f ~> g) -> (g ~> f) -> NIso f g
 
-type HCompose
-  :: ((* -> *) -> * -> *)
-  -> (* -> * -> *) -> * -> * -> *
+type HCompose :: ((* -> *) -> * -> *) -> (* -> * -> *) -> * -> * -> *
 type role HCompose nominal nominal nominal nominal
 newtype HCompose f g a b where
   HCompose :: f (g a) b -> HCompose f g a b
@@ -40,10 +46,20 @@ type role HConst nominal phantom
 newtype HConst f g where
   HConst :: (forall a. f a) -> HConst f g
 
+type HAlongside :: (* -> *) -> (* -> *) -> *
+type role HAlongside phantom nominal
+newtype HAlongside f g where
+  HAlongside :: (forall a. g a) -> HAlongside f g
+
 type HIdentity :: (* -> *) -> *
 type role HIdentity nominal
 newtype HIdentity f where
   HIdentity :: (forall a. f a) -> HIdentity f
+
+type HFix :: ((* -> *) -> * -> *) -> * -> *
+type role HFix nominal nominal
+newtype HFix f i where
+  HFix :: { unHFix :: f (HFix f) i } -> HFix f i
 
 -- -------------------------------------------------------------------- --
 -- Classes
@@ -61,16 +77,22 @@ class HFunctor t => HApplicative t where
   {-# minimal alift2, hpure, happly #-}
 
 class HContravariant t where
+  fcontramap :: Contravariant f => (a -> b) -> t f b -> t f a
   hcontramap :: (f ~> g) -> (t g ~> t f)
-  {-# minimal hcontramap #-}
+  {-# minimal hcontramap, fcontramap #-}
 
 class HContravariant t => HDivisible t where
+  adivide :: Divisible f => (a -> (b,c)) -> t f b -> t f c -> t f a
   hdivide :: (forall x. f x -> (g x, h x)) -> t g a -> t h a -> t f a
-  {-# minimal hdivide #-}
+
+  hconquer :: t f a
+  {-# minimal hdivide, adivide, hconquer #-}
 
 class HDivisible t => HDecideable t where
+  adecide :: Decidable f => (a -> Either b c) -> t f b -> t f c -> t f a
   hdecide :: (forall x. f x -> Either (g x) (h x)) -> t g a -> t h a -> t f a
-  {-# minimal hdecide #-}
+  hlose :: (f a -> f Void) -> t f a
+  {-# minimal hdecide, adecide, hlose #-}
 
 class HFunctor t => HTraversable t where
   atraverse :: Applicative h => (forall i. f i -> h (g i)) -> t f a -> h (t g b)
@@ -83,8 +105,14 @@ class HFunctor t => HTraversable t where
   {-# minimal atraverse, (htraverse | hsequence) #-}
 
 class HFunctor t => HDistributive t where
-  hdistribute :: HFunctor u => u (t f) ~> t (u g)
-  {-# minimal hdistribute #-}
+  acotraverse :: Functor h => (forall i. h (g i) -> f i) -> h (t g b) -> t f a
+
+  hcotraverse :: HFunctor u => (forall i. u g i -> f i) -> u (t g) ~> t f
+  hcotraverse f = hmap f . hdistribute
+
+  hdistribute :: HFunctor u => u (t f) ~> t (u f)
+  hdistribute = hcotraverse id
+  {-# minimal acotraverse, (hdistribute | hdistribute) #-}
 
 class HApplicative t => HMonad t where
   mbind :: Monad m => t m a -> (a -> m b) -> t m b
@@ -120,8 +148,9 @@ class (HFunctor l, HFunctor r) => HAdjunction l r where
   {-# minimal hunit, hcounit #-}
 
 class HProfunctor p where
+  pdimap :: Profunctor q => (s -> a) -> (b -> t) -> p (q a) (q b) -> p (q s) (q t)
   hdimap :: (s ~> a) -> (b ~> t) -> p a b -> p s t
-  {-# minimal hdimap #-}
+  {-# minimal hdimap, pdimap #-}
 
 class HFunctor t => HRepresentable t where
   type HRep t :: * -> *
