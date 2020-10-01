@@ -66,8 +66,12 @@ class HDivisible t => HDecideable t where
   {-# minimal hdecide #-}
 
 class HFunctor t => HTraversable t where
-  htraverse :: Applicative u => (forall x. f x -> u (g x)) -> t f a -> u (t g a)
-  {-# minimal htraverse #-}
+  htraverse :: HApplicative u => (forall i. f i -> u g i) -> t f ~> u (t g)
+  htraverse f = hsequence . hmap f
+
+  hsequence :: HApplicative u => t (u f) ~> u (t f)
+  hsequence = htraverse id
+  {-# minimal htraverse | hsequence #-}
 
 class HFunctor t => HDistributive t where
   hdistribute :: HFunctor u => u (t f) ~> t (u g)
