@@ -24,21 +24,24 @@ source-repository head
 
 library
   exposed-modules:
-    Data.HAdjunction
-    Data.HApplicative
-    Data.HContravariant
-    Data.HDistributive
-    Data.HFunctor
-    Data.HFunctor.Semi
-    Data.HMonad
-    Data.HTraversable
-    Data.HTraversable.Semi
-    Data.NaturalTransformation
+    Data.Adjunction.Higher
+    Data.Applicative.Higher
+    Data.Comonad.Higher
+    Data.Function.Higher
+    Data.Functor.Higher
+    Data.Functor.Higher.Compose
+    Data.Functor.Higher.Const
+    Data.Functor.Higher.Contravariant
+    Data.Functor.Higher.Fix
+    Data.Functor.Higher.Identity
+    Data.Functor.Higher.Rep
+    Data.Distributive.Higher
+    Data.Monad.Higher
+    Data.Traversable.Higher
 
-  -- Data.HApplicative.Trans
+
   -- Data.HCofree
-  -- Data.HComonad
-  -- Data.HComonad.Trans
+  --
   -- Data.HCompose
   -- Data.HConst
   --
@@ -68,7 +71,9 @@ library
     , comonad
     , contravariant
     , distributive
+    , mtl
     , profunctors
+    , transformers
 
   hs-source-dirs:   src
   default-language: Haskell2010

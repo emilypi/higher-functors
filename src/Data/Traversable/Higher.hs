@@ -1,11 +1,12 @@
 {-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE RankNTypes #-}
-module Data.HTraversable where
+module Data.Traversable.Higher where
 
 
-import Data.HApplicative
-import Data.HFunctor
-import Data.NaturalTransformation
+import Data.Applicative.Higher
+import Data.Function.Higher (type (~>))
+import Data.Functor.Higher
+
 
 
 class HFunctor t => HTraversable t where
@@ -15,3 +16,7 @@ class HFunctor t => HTraversable t where
   hsequence :: HApplicative u => t (u f) ~> u (t f)
   hsequence = htraverse id
   {-# minimal htraverse | hsequence #-}
+
+class SemiHFunctor t => SemiHTraversable t where
+  atraverse :: Applicative h => (forall i. f i -> h (g i)) -> t f -> h (t g)
+  {-# minimal atraverse #-}

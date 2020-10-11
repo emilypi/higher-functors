@@ -1,9 +1,4 @@
-module Data.HProfunctor where
-
-
-import Data.HFunctor
-import Data.NaturalTransformation
-import Data.Profunctor
+module Data.Profunctor.Higher where
 
 
 class HProfunctor p where

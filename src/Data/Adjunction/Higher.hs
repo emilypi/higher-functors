@@ -1,10 +1,16 @@
-{-# LANGUAGE RankNTypes #-}
-{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE PolyKinds #-}
+{-# LANGUAGE KindSignatures #-}
+{-# LANGUAGE RoleAnnotations #-}
+{-# LANGUAGE GADTs #-}
+{-# LANGUAGE StandaloneKindSignatures #-}
 {-# LANGUAGE TypeOperators #-}
-module Data.HAdjunction where
+{-# LANGUAGE RankNTypes #-}
+{-# language MultiParamTypeClasses #-}
+module Data.Adjunction.Higher where
 
-import Data.HFunctor
-import Data.NaturalTransformation
+import Data.Function.Higher
+import Data.Functor.Higher
+
 
 class (HFunctor l, HFunctor r) => HAdjunction l r where
   hunit :: a ~> r (l a)
