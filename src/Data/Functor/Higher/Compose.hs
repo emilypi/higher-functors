@@ -1,6 +1,6 @@
-{-# LANGUAGE PolyKinds #-}
-{-# LANGUAGE FlexibleContexts #-}
-{-# LANGUAGE DefaultSignatures #-}
+{-# language PolyKinds #-}
+{-# language FlexibleContexts #-}
+{-# language DefaultSignatures #-}
 {-# language GADTs #-}
 {-# language KindSignatures #-}
 {-# language MultiParamTypeClasses #-}
@@ -11,6 +11,7 @@
 module Data.Functor.Higher.Compose
 ( HCompose(..)
 ) where
+
 
 import Data.Kind
 

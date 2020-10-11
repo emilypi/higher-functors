@@ -1,10 +1,10 @@
-{-# LANGUAGE PolyKinds #-}
-{-# LANGUAGE KindSignatures #-}
-{-# LANGUAGE RoleAnnotations #-}
-{-# LANGUAGE GADTs #-}
-{-# LANGUAGE StandaloneKindSignatures #-}
-{-# LANGUAGE TypeOperators #-}
-{-# LANGUAGE RankNTypes #-}
+{-# language PolyKinds #-}
+{-# language KindSignatures #-}
+{-# language RoleAnnotations #-}
+{-# language GADTs #-}
+{-# language StandaloneKindSignatures #-}
+{-# language TypeOperators #-}
+{-# language RankNTypes #-}
 module Data.Function.Higher
 ( -- * Natural Transformations
   NT(..)
@@ -43,7 +43,7 @@ newtype NT f g where
 
 -- | The type of natural isomorphisms.
 --
-type NIso :: (k -> Type) -> (k -> Type) -> Type
+type NIso :: (i -> Type) -> (j -> Type) -> Type
 type role NIso nominal nominal
 data NIso f g where
   NIso :: (f ~> g) -> (g ~> f) -> NIso f g

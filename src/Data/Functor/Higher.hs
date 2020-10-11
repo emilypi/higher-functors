@@ -1,9 +1,9 @@
-{-# LANGUAGE PolyKinds #-}
-{-# LANGUAGE KindSignatures #-}
-{-# LANGUAGE FlexibleContexts #-}
-{-# LANGUAGE TypeOperators #-}
-{-# LANGUAGE DefaultSignatures #-}
-{-# LANGUAGE RankNTypes #-}
+{-# language PolyKinds #-}
+{-# language KindSignatures #-}
+{-# language FlexibleContexts #-}
+{-# language TypeOperators #-}
+{-# language DefaultSignatures #-}
+{-# language RankNTypes #-}
 module Data.Functor.Higher
 ( -- * Type-indexed functors
   SemiHFunctor(..)

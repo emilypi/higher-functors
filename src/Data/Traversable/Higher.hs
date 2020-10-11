@@ -1,5 +1,5 @@
-{-# LANGUAGE TypeOperators #-}
-{-# LANGUAGE RankNTypes #-}
+{-# language TypeOperators #-}
+{-# language RankNTypes #-}
 module Data.Traversable.Higher where
 
 
