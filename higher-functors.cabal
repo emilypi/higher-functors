@@ -27,6 +27,7 @@ library
     Data.Adjunction.Higher
     Data.Applicative.Higher
     Data.Comonad.Higher
+    Data.Comonad.Higher.Cofree
     Data.Function.Higher
     Data.Functor.Higher
     Data.Functor.Higher.Compose
@@ -35,36 +36,18 @@ library
     Data.Functor.Higher.Fix
     Data.Functor.Higher.Identity
     Data.Functor.Higher.Rep
+    Data.Functor.Higher.Tensor
     Data.Distributive.Higher
     Data.Monad.Higher
+    Data.Monad.Higher.Free
     Data.Traversable.Higher
 
 
-  -- Data.HCofree
-  --
-  -- Data.HCompose
-  -- Data.HConst
-  --
-  -- Data.HContravariant.Trans
   -- Data.HCoyoneda
   --
-  -- Data.HDistributive.Trans
-  -- Data.HFix
-  -- Data.HFoldable
-  -- Data.HFoldable.Trans
-  -- Data.HFree
   -- Data.HLan
-  --
-  -- Data.HMonad.Trans
-  -- Data.HProfunctor
   -- Data.HRan
-  -- Data.HRepresentable
-  --
-  -- Data.HTraversable.Trans
   -- Data.HYoneda
-
-  -- other-modules:
-  -- other-extensions:
   build-depends:
     , adjunctions
     , base           >=4.10

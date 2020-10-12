@@ -1,21 +1,23 @@
-{-# LANGUAGE PolyKinds #-}
-{-# LANGUAGE KindSignatures #-}
-{-# LANGUAGE FlexibleContexts #-}
-{-# LANGUAGE TypeOperators #-}
-{-# LANGUAGE DefaultSignatures #-}
-{-# LANGUAGE RankNTypes #-}
+{-# language PolyKinds #-}
+{-# language KindSignatures #-}
+{-# language FlexibleContexts #-}
+{-# language TypeOperators #-}
+{-# language DefaultSignatures #-}
+{-# language RankNTypes #-}
 module Data.Applicative.Higher where
 
 
-import Data.Function.Higher
-import Data.Functor.Higher
+import Data.Function.Higher (type (~>))
+import Data.Functor.Higher (SemiHFunctor, HFunctor)
+import Data.Functor.Higher.Tensor (HTensor(..))
 
 
 class HFunctor t => HApplicative t where
   hpure :: f ~> t f
-  happly :: (forall x. f x -> g x -> u f g x) -> t f a -> t g b -> t (u f g) c
-  {-# minimal hpure, happly #-}
+  hlift2 :: HTensor (t f) (t g) ~> t (HTensor f g)
+  {-# minimal hpure, hlift2 #-}
 
 class SemiHFunctor t => SemiHApplicative t where
-  alift2 :: Applicative f => (a -> b -> c) -> t f -> t g -> t h
-  {-# minimal alift2 #-}
+  semipure :: Applicative f => f a -> t f
+  semilift2 :: Applicative f => (a -> b -> c) -> t f -> t g -> t h
+  {-# minimal semilift2, semipure #-}

@@ -1,12 +1,12 @@
-{-# LANGUAGE RoleAnnotations #-}
-{-# LANGUAGE GADTs #-}
-{-# LANGUAGE StandaloneKindSignatures #-}
-{-# LANGUAGE PolyKinds #-}
-{-# LANGUAGE KindSignatures #-}
-{-# LANGUAGE FlexibleContexts #-}
-{-# LANGUAGE TypeOperators #-}
-{-# LANGUAGE DefaultSignatures #-}
-{-# LANGUAGE RankNTypes #-}
+{-# language RoleAnnotations #-}
+{-# language GADTs #-}
+{-# language StandaloneKindSignatures #-}
+{-# language PolyKinds #-}
+{-# language KindSignatures #-}
+{-# language FlexibleContexts #-}
+{-# language TypeOperators #-}
+{-# language DefaultSignatures #-}
+{-# language RankNTypes #-}
 module Data.Monad.Higher where
 
 
