@@ -9,6 +9,7 @@
 module Data.Functor.Higher
 ( -- * Higher functors
   HFunctor(..)
+, hmapIdentity
   -- * Type-indexed functors
 , SemiHFunctor(..)
 , Applied(..)
@@ -102,6 +103,14 @@ instance HFunctor Lift where
 instance HFunctor (Product f) where
   hmap f (Pair t u) = Pair t (f u)
   {-# inline hmap #-}
+
+hmapIdentity
+  :: HFunctor t
+  => Functor f
+  => (forall x. f x -> x)
+  -> t f a
+  -> t Identity a
+hmapIdentity f = hmap (Identity . f)
 
 -- -------------------------------------------------------------------- --
 -- Type-indexed functors
