@@ -25,4 +25,6 @@ newtype HCompose
   (u :: (k -> Type) -> k -> Type)
   (f :: k -> Type)
   (a :: k) where
-  HCompose :: t (u f) a -> HCompose t u f a
+  HCompose ::
+    { getHCompose :: t (u f) a
+    } -> HCompose t u f a

@@ -7,14 +7,14 @@
 module Data.Applicative.Higher where
 
 
+import Data.Functor.Product
 import Data.Function.Higher (type (~>))
 import Data.Functor.Higher (SemiHFunctor, HFunctor)
-import Data.Functor.Higher.Tensor (HTensor(..))
 
 
 class HFunctor t => HApplicative t where
   hpure :: f ~> t f
-  hlift2 :: HTensor (t f) (t g) ~> t (HTensor f g)
+  hlift2 :: Product (t f) (t g) ~> t (Product f g)
   {-# minimal hpure, hlift2 #-}
 
 class SemiHFunctor t => SemiHApplicative t where

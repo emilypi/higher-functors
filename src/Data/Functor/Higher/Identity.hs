@@ -1,21 +1,43 @@
-{-# LANGUAGE RoleAnnotations #-}
-{-# LANGUAGE GADTs #-}
-{-# LANGUAGE StandaloneKindSignatures #-}
-{-# LANGUAGE PolyKinds #-}
-{-# LANGUAGE KindSignatures #-}
-{-# LANGUAGE FlexibleContexts #-}
-{-# LANGUAGE TypeOperators #-}
-{-# LANGUAGE DefaultSignatures #-}
-{-# LANGUAGE RankNTypes #-}
+{-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DeriveTraversable #-}
+{-# LANGUAGE DeriveFunctor #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# language RoleAnnotations #-}
+{-# language GADTs #-}
+{-# language StandaloneKindSignatures #-}
+{-# language DerivingVia #-}
+{-# language PolyKinds #-}
+{-# language KindSignatures #-}
+{-# language FlexibleContexts #-}
+{-# language TypeOperators #-}
+{-# language DefaultSignatures #-}
+{-# language RankNTypes #-}
 module Data.Functor.Higher.Identity
 ( HIdentity(..)
-)where
+) where
 
 
-import Data.Kind
+import Data.Kind (Type)
+import Data.Data (Data, Typeable)
+
+import GHC.Generics ( Generic )
+import Data.Functor.Contravariant.Generic ()
 
 
-type HIdentity :: (i -> Type) -> Type
-type role HIdentity nominal
-data HIdentity f where
-  HIdentity :: f a -> HIdentity f
+-- | The identity functor in the 2-category @[Hask,Hask]@ of
+-- Haskell endo-functors
+--
+type HIdentity :: (i -> Type) -> i -> Type
+type role HIdentity nominal nominal
+newtype HIdentity f a where
+  HIdentity :: { runHIdentity :: f a } -> HIdentity f a
+  deriving stock
+    ( Functor, Foldable, Traversable
+    , Data, Typeable, Generic
+    )
+  deriving newtype
+    ( Eq, Ord, Show, Read
+    , Num, Fractional, Real
+    , Semigroup, Monoid
+    )
