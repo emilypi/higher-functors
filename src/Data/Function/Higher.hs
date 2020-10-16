@@ -9,8 +9,10 @@ module Data.Function.Higher
 ( -- * Natural Transformations
   NT(..)
 , NIso(..)
+, Nop(..)
   -- * Type synonyms
 , type (~>)
+, type (<~)
 , type (<~>)
 ) where
 
@@ -18,9 +20,7 @@ module Data.Function.Higher
 import Data.Kind (Type)
 
 
--- match the fixity of '(->)' to force the parenthetical
-infixr 0 ~>
-infixr 0 <~>
+infixr 0 ~>, <~>, <~
 
 -- | A synonym for 'NT'.
 --
@@ -31,6 +31,10 @@ type (~>) (f :: k -> Type) (g :: k -> Type)
 --
 type f <~> g = NIso f g
 
+-- | A synonym for 'Nop'. The pun here is "natural 'Op'"
+--
+type (<~) (f :: k -> Type) (g :: k -> Type)
+    = forall a. g a -> f a
 
 -- | The type of natural transformations. Note that in general
 -- this is a stronger condition than naturality due to the presence
@@ -47,3 +51,11 @@ type NIso :: (i -> Type) -> (j -> Type) -> Type
 type role NIso nominal nominal
 data NIso f g where
   NIso :: (f ~> g) -> (g ~> f) -> NIso f g
+
+-- | The type of natural transformations in the opposite
+-- functor category. @('->')@ is to 'NT' as 'Op' is to 'Nop'
+--
+type Nop :: (i -> Type) -> (i -> Type) -> Type
+type role Nop nominal nominal
+newtype Nop f g where
+  Nop :: (f <~ g) -> Nop f g

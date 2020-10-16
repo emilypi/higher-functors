@@ -13,6 +13,8 @@ module Data.Functor.Higher.Applied
 
 
 import Data.Kind
+
+
 -- | 'Applied' represents a type-constructor applied to a haskell type.
 -- The container can be changed by 'semimap'ping constructors.
 --
