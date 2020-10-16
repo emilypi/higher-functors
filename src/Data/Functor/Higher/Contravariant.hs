@@ -7,8 +7,6 @@
 module Data.Functor.Higher.Contravariant where
 
 
-import Data.Functor.Contravariant
-import Data.Functor.Contravariant.Divisible (Decidable, Divisible)
 import Data.Kind (Type)
 import Data.Function.Higher
 import Data.Void (Void)
@@ -19,6 +17,9 @@ class HContravariant (t :: (i -> Type) -> j -> Type) where
   --fcontramap :: Contravariant f => (a -> b) -> t f b -> t f a
   hcontramap :: (f ~> g) -> (t g ~> t f)
   {-# minimal hcontramap #-}
+
+instance HContravariant (Nop f) where
+  hcontramap e (Nop gf) = Nop $ gf . e
 
 class HContravariant t => HDivisible t where
   -- adivide :: Divisible f => (a -> (b,c)) -> t f b -> t f c -> t f a

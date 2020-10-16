@@ -39,7 +39,7 @@ import Control.Monad.Trans.State (StateT(..))
 import Control.Monad.Trans.Writer (WriterT(..))
 
 import Data.Coerce (coerce)
-import Data.Function.Higher (type (~>))
+import Data.Function.Higher (NT(..), type (~>))
 import Data.Functor.Higher.Applied (Applied(..))
 import Data.Functor.Higher.Identity (HIdentity(..))
 import Data.Functor.Higher.Compose (HCompose(..))
@@ -113,6 +113,10 @@ instance HFunctor Lift where
 instance HFunctor (Product f) where
   hmap f (Pair t u) = Pair t (f u)
   {-# inline hmap #-}
+
+instance HFunctor (NT f) where
+  hmap h (NT fg) = NT $ h . fg
+
 
 hlower
   :: HFunctor t
