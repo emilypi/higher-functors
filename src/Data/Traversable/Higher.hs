@@ -2,7 +2,10 @@
 {-# language LambdaCase #-}
 {-# language TypeOperators #-}
 {-# language RankNTypes #-}
-module Data.Traversable.Higher where
+module Data.Traversable.Higher
+( HTraversable(..)
+, SemiHTraversable(..)
+) where
 
 
 import Control.Applicative (liftA2)
