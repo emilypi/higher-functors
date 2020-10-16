@@ -15,7 +15,8 @@
 -- Stability	: Experimental
 -- Portability	: portable
 --
--- This module consists of the 'HFunctor'
+-- This module consists of the class definitions for 'HFunctor' and
+-- 'SemiHFunctor' along with useful combinators for them.
 --
 module Data.Functor.Higher
 ( -- * Higher functors
@@ -172,17 +173,17 @@ instance SemiHFunctor f => SemiHFunctor (M1 i c f) where
   semimap f (M1 a) = M1 (semimap f a)
   {-# inline semimap #-}
 
-instance (SemiHFunctor f, SemiHFunctor g) => SemiHFunctor ((:+:) f g) where
+instance (SemiHFunctor f, SemiHFunctor g) => SemiHFunctor (f :+: g) where
   semimap f (L1 a) = L1 (semimap f a)
   semimap f (R1 a) = R1 (semimap f a)
   {-# inline semimap #-}
 
-instance (SemiHFunctor f, SemiHFunctor g) => SemiHFunctor ((:*:) f g) where
+instance (SemiHFunctor f, SemiHFunctor g) => SemiHFunctor (f :*: g) where
   semimap f (a :*: b) = semimap f a :*: semimap f b
   {-# inline semimap #-}
 
 -- (f :.: g) a = f (g a), f must be (regular) Functor
-instance (Functor f, SemiHFunctor g) => SemiHFunctor ((:.:) f g) where
+instance (Functor f, SemiHFunctor g) => SemiHFunctor (f :.: g) where
   semimap f (Comp1 a) = Comp1 (fmap (semimap f) a)
   {-# inline semimap #-}
 
