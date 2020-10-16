@@ -20,11 +20,5 @@ type HCompose
   -> ((k -> Type) -> k -> Type)
   -> (k -> Type) -> k -> Type
 type role HCompose nominal nominal nominal nominal
-newtype HCompose
-  (t :: (k -> Type) -> k -> Type)
-  (u :: (k -> Type) -> k -> Type)
-  (f :: k -> Type)
-  (a :: k) where
-  HCompose ::
-    { getHCompose :: t (u f) a
-    } -> HCompose t u f a
+newtype HCompose t u f a where
+  HCompose :: { getHCompose :: t (u f) a } -> HCompose t u f a

@@ -6,48 +6,57 @@
 {-# language TypeOperators #-}
 {-# language DefaultSignatures #-}
 {-# language RankNTypes #-}
+-- |
+-- Module       : Data.Functor.Higher
+-- Copyright 	: (c) 2020 Emily Pillmore
+-- License	: BSD-style
+--
+-- Maintainer	: Emily Pillmore <emilypi@cohomolo.gy>
+-- Stability	: Experimental
+-- Portability	: portable
+--
+-- This module consists of the 'HFunctor'
+--
 module Data.Functor.Higher
 ( -- * Higher functors
   HFunctor(..)
-, hmapIdentity
+, hlower
   -- * Type-indexed functors
 , SemiHFunctor(..)
-, Applied(..)
-, semimapIdentity
+, semilower
 ) where
 
 
-import Control.Applicative.Lift
-import Control.Monad.Trans.Accum
-import Control.Monad.Trans.Except
-import Control.Monad.Trans.Identity
-import Control.Monad.Trans.Maybe
-import Control.Monad.Trans.Reader
-import Control.Monad.Trans.RWS
-import Control.Monad.Trans.State
-import Control.Monad.Trans.Writer
+import Control.Applicative.Lift (Lift(..))
+import Control.Monad.Trans.Accum (runAccumT, AccumT(..))
+import Control.Monad.Trans.Except (ExceptT(..), runExceptT)
+import Control.Monad.Trans.Identity (IdentityT(..))
+import Control.Monad.Trans.Maybe (MaybeT(..))
+import Control.Monad.Trans.Reader (ReaderT(..))
+import Control.Monad.Trans.RWS (RWST(..))
+import Control.Monad.Trans.State (StateT(..))
+import Control.Monad.Trans.Writer (WriterT(..))
 
-import Data.Function.Higher
-import Data.Functor.Higher.Applied
-import Data.Functor.Higher.Identity
-import Data.Functor.Higher.Compose
-import Data.Functor.Higher.Const
-import Data.Functor.Compose
-import Data.Functor.Const
-import Data.Functor.Identity
-import Data.Functor.Product
-import Data.Functor.Sum
+import Data.Coerce (coerce)
+import Data.Function.Higher (type (~>))
+import Data.Functor.Higher.Applied (Applied(..))
+import Data.Functor.Higher.Identity (HIdentity(..))
+import Data.Functor.Higher.Compose (HCompose(..))
+import Data.Functor.Higher.Const (HConst(..), SemiHConst(..))
+import Data.Functor.Compose (Compose(..))
+import Data.Functor.Const (Const(..))
+import Data.Functor.Identity (Identity(..))
+import Data.Functor.Product (Product(..))
+import Data.Functor.Sum (Sum(..))
 import Data.Kind (Type)
-import Data.Proxy
+import Data.Proxy (Proxy)
 
 import GHC.Generics
-import Data.Coerce (coerce)
-
 
 -- -------------------------------------------------------------------- --
 -- Higher functors
 
-class HFunctor (t :: (i -> Type) -> (j -> Type)) where
+class HFunctor (t :: (i -> Type) -> (i -> Type)) where
   hmap :: (f ~> g) -> (t f ~> t g)
   {-# minimal hmap #-}
 
@@ -55,7 +64,7 @@ instance (HFunctor t, HFunctor u) => HFunctor (HCompose t u) where
   hmap f = HCompose . hmap (hmap f) . getHCompose
   {-# inline hmap #-}
 
-instance HFunctor (HConst a) where
+instance HFunctor (HConst f) where
   hmap _ = coerce
   {-# inline hmap #-}
 
@@ -104,13 +113,14 @@ instance HFunctor (Product f) where
   hmap f (Pair t u) = Pair t (f u)
   {-# inline hmap #-}
 
-hmapIdentity
+hlower
   :: HFunctor t
   => Functor f
-  => (forall x. f x -> x)
+  => (forall i. f i -> i)
   -> t f a
   -> t Identity a
-hmapIdentity f = hmap (Identity . f)
+hlower f t = hmap (Identity . f) t
+{-# inline hlower #-}
 
 -- -------------------------------------------------------------------- --
 -- Type-indexed functors
@@ -190,12 +200,11 @@ instance (Functor f, SemiHFunctor g) => SemiHFunctor (Compose f g) where
   semimap f (Compose a) = Compose (fmap (semimap f) a)
   {-# inline semimap #-}
 
-
-semimapIdentity
+semilower
   :: SemiHFunctor t
   => Functor f
   => (forall x. f x -> x)
   -> t f
   -> t Identity
-semimapIdentity f = semimap (Identity . f)
-{-# inline semimapIdentity #-}
+semilower f = semimap (Identity . f)
+{-# inline semilower #-}

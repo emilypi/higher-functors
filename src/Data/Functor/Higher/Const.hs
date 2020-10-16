@@ -25,10 +25,10 @@ import Data.Functor.Contravariant.Generic ()
 -- | A higher 'Const'ant functor. A type is indexed by a higher
 -- functor @t@. This is a constant functor in the 2-category @[Hask,Hask]@
 --
-type HConst :: Type -> (j -> Type) -> i -> Type
-type role HConst nominal phantom phantom
-newtype HConst a f b where
-  HConst :: { getHConst :: a } -> HConst a f b
+type HConst :: (i -> Type) -> (j -> Type) -> i -> Type
+type role HConst nominal phantom nominal
+newtype HConst f g a where
+  HConst :: { getHConst :: f a } -> HConst f g a
   deriving stock
     ( Functor, Foldable, Traversable
     , Data, Typeable, Generic
