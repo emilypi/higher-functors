@@ -27,14 +27,15 @@ infixr 0 ~>, <~>, <~
 type (~>) (f :: k -> Type) (g :: k -> Type)
     = forall a. f a -> g a
 
--- | A synonym for 'NIso'
---
-type f <~> g = NIso f g
-
 -- | A synonym for 'Nop'. The pun here is "natural 'Op'"
 --
 type (<~) (f :: k -> Type) (g :: k -> Type)
     = forall a. g a -> f a
+
+-- | A synonym for 'NIso'
+--
+type (<~>) (f :: k -> Type) (g :: k -> Type)
+    = (forall a. f a -> g a) -> (forall a. g a -> f a)
 
 -- | The type of natural transformations. Note that in general
 -- this is a stronger condition than naturality due to the presence
@@ -50,7 +51,7 @@ newtype NT f g where
 type NIso :: (i -> Type) -> (j -> Type) -> Type
 type role NIso nominal nominal
 data NIso f g where
-  NIso :: (f ~> g) -> (g ~> f) -> NIso f g
+  NIso :: (f <~> g) -> NIso f g
 
 -- | The type of natural transformations in the opposite
 -- functor category. @('->')@ is to 'NT' as 'Op' is to 'Nop'

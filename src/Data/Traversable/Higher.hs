@@ -39,6 +39,7 @@ instance (HTraversable t, HTraversable u) => HTraversable (HCompose t u) where
 
 instance Functor f => HTraversable (Product f) where
   htraverse f (Pair a b) = hlift2 $ Pair (hpure a) (f b)
+  {-# inline htraverse #-}
 
 -- -------------------------------------------------------------------- --
 -- Type-indexed traversable functors
