@@ -35,7 +35,7 @@ type (<~) (f :: k -> Type) (g :: k -> Type)
 -- | A synonym for 'NIso'
 --
 type (<~>) (f :: k -> Type) (g :: k -> Type)
-    = (forall a. f a -> g a) -> (forall a. g a -> f a)
+    = (f ~> g) -> (g ~> f)
 
 -- | The type of natural transformations. Note that in general
 -- this is a stronger condition than naturality due to the presence
