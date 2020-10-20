@@ -117,7 +117,6 @@ instance HFunctor (Product f) where
 instance HFunctor (NT f) where
   hmap h (NT fg) = NT $ h . fg
 
-
 hlower
   :: HFunctor t
   => Functor f

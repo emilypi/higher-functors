@@ -44,14 +44,14 @@ type (<~>) (f :: k -> Type) (g :: k -> Type)
 type NT :: (k -> Type) -> (k -> Type) -> k -> Type
 type role NT nominal nominal nominal
 newtype NT f g a where
-  NT :: (f ~> g) -> NT f g a
+  NT :: { runNT :: (f ~> g) } -> NT f g a
 
 -- | The type of natural isomorphisms.
 --
 type NIso :: (i -> Type) -> (j -> Type) -> k -> Type
 type role NIso nominal nominal nominal
 data NIso f g a where
-  NIso :: (f <~> g) -> NIso f g a
+  NIso :: { runNTIso :: (f <~> g) } -> NIso f g a
 
 -- | The type of natural transformations in the opposite
 -- functor category. @('->')@ is to 'NT' as 'Op' is to 'Nop'
@@ -59,4 +59,4 @@ data NIso f g a where
 type Nop :: (i -> Type) -> (i -> Type) -> i -> Type
 type role Nop nominal nominal nominal
 newtype Nop f g a where
-  Nop :: (f <~ g) -> Nop f g a
+  Nop :: { runNop :: (f <~ g) } -> Nop f g a
