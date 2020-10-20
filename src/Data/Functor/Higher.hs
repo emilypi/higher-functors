@@ -57,7 +57,7 @@ import GHC.Generics
 -- -------------------------------------------------------------------- --
 -- Higher functors
 
-class HFunctor (t :: (i -> Type) -> (i -> Type)) where
+class HFunctor (t :: (i -> Type) -> (j -> Type)) where
   hmap :: (f ~> g) -> (t f ~> t g)
   {-# minimal hmap #-}
 

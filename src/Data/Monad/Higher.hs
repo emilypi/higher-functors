@@ -28,10 +28,9 @@ import Control.Monad (join)
 
 class HFunctor t => HMonad t where
   hbind
-    :: ( Functor f
-       , Functor g
-       , Functor (t g)
-       )
+    :: Functor f
+    => Functor g
+    => Functor (t g)
     => t f a
     -> (f ~> t g)
     -> t g a

@@ -47,7 +47,7 @@ class HFunctor t => HApplicative t where
   hlift2 :: Product (t f) (t g) ~> t (Product f g)
   {-# minimal hpure, hlift2 #-}
 
-instance ( HApplicative t, HApplicative u, forall f. Functor (u f))
+instance (HApplicative t, HApplicative u, forall f. Functor (u f))
   => HApplicative (HCompose t u) where
   hpure = HCompose . hpure . hpure
   {-# inline hpure #-}
