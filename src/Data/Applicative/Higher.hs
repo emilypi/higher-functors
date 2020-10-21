@@ -10,7 +10,7 @@
 {-# language RankNTypes #-}
 module Data.Applicative.Higher
 ( HApplicative(..)
-, SemiHApplicative(..)
+, SemiHApply(..)
 ) where
 
 
@@ -131,7 +131,7 @@ instance Monoid w => HApplicative (RWST r w s) where
 -- Type-indexed Applicatives
 --
 
-class SemiHFunctor t => SemiHApplicative t where
+class SemiHFunctor t => SemiHApply t where
   semilift2
     :: Applicative f
     => (forall a. f a -> g a -> h a)
@@ -140,33 +140,33 @@ class SemiHFunctor t => SemiHApplicative t where
     -> t h
   {-# minimal semilift2 #-}
 
-instance SemiHApplicative (Applied a) where
+instance SemiHApply (Applied a) where
   semilift2 f (Applied t) (Applied u) = Applied (f t u)
   {-# inline semilift2 #-}
 
-instance SemiHApplicative Proxy where
+instance SemiHApply Proxy where
   semilift2 _ _ _ = Proxy
 
-instance Semigroup a => SemiHApplicative (Const a) where
+instance Semigroup a => SemiHApply (Const a) where
   semilift2 _ (Const a) (Const b) = Const (a <> b)
 
-instance Semigroup a => SemiHApplicative (SemiHConst a) where
+instance Semigroup a => SemiHApply (SemiHConst a) where
   semilift2 _ (SemiHConst a) (SemiHConst b) = SemiHConst (a <> b)
 
-instance SemiHApplicative V1 where
+instance SemiHApply V1 where
   semilift2 _ _ = \case
 
-instance SemiHApplicative U1 where
+instance SemiHApply U1 where
   semilift2 _ _ = coerce
 
-instance SemiHApplicative (K1 i c) where
+instance SemiHApply (K1 i c) where
   semilift2 _ _ = coerce
 
-instance SemiHApplicative f => SemiHApplicative (Rec1 f) where
+instance SemiHApply f => SemiHApply (Rec1 f) where
   semilift2 f (Rec1 t) (Rec1 u) = Rec1 $ semilift2 f t u
 
-instance SemiHApplicative f => SemiHApplicative (M1 i c f) where
+instance SemiHApply f => SemiHApply (M1 i c f) where
   semilift2 f (M1 a) (M1 b) = M1 (semilift2 f a b)
 
-instance (Applicative f, SemiHApplicative g) => SemiHApplicative (Compose f g) where
-  semilift2 f (Compose a) (Compose b) = Compose (liftA2 (semilift2 f) a b)
+instance (Applicative f, SemiHApply g) => SemiHApply (Compose f g) where
+  semilift2 f (Compose a) (Compose b) = Compose $ liftA2 (semilift2 f) a b
