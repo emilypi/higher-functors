@@ -7,9 +7,11 @@
 {-# language DefaultSignatures #-}
 {-# language RankNTypes #-}
 module Data.Functor.Higher.Contravariant
-( HContravariant(..)
+( -- * Higher contravariant functors
+  HContravariant(..)
 , HDivisible(..)
 , HDecidable(..)
+  -- * Type-indexed contravariant functors
 , SemiHContravariant(..)
 , SemiHDivisible(..)
 , SemiHDecidable(..)
@@ -43,9 +45,11 @@ class HContravariant (t :: (i -> Type) -> j -> Type) where
 
 instance HContravariant (Nop f) where
   hcontramap f (Nop g) = Nop $ g . f
+  {-# inline hcontramap #-}
 
 instance HContravariant (HConst f) where
   hcontramap _ = coerce
+  {-# inline hcontramap #-}
 
 class HContravariant t => HDivisible t where
   hdivide :: (forall x. f x -> (g x, h x)) -> t g a -> t h a -> t f a
@@ -70,7 +74,6 @@ instance Alternative f => HDivisible (HConst f) where
 
 
 class HDivisible t => HDecidable t where
-  -- adecide :: Decidable f => (a -> Either b c) -> t f b -> t f c -> t f a
   hchoose :: (forall x. f x -> Either (g x) (h x)) -> t g a -> t h a -> t f a
   hlose :: (forall x. f x -> Void) -> t f a
   {-# minimal hchoose, hlose #-}
@@ -86,7 +89,10 @@ instance Alternative f => HDecidable (Nop f) where
 
 instance (Decidable f, Alternative f) => HDecidable (HConst f) where
   hchoose _ _ = coerce
+  {-# inline hchoose #-}
+
   hlose _ = HConst empty
+  {-# inline hlose #-}
 
 -- -------------------------------------------------------------------- --
 -- Type-indexed contravariant functors
@@ -94,14 +100,9 @@ instance (Decidable f, Alternative f) => HDecidable (HConst f) where
 class SemiHContravariant (t :: (i -> Type) -> Type) where
   semicontramap :: (f <~ g) -> t f -> t g
   default semicontramap
-    :: ( Generic1 t
-       , SemiHContravariant (Rep1 t)
-       )
-    => (f <~ g)
-    -> t f
-    -> t g
+    :: Generic1 t => SemiHContravariant (Rep1 t) => (f <~ g) -> t f -> t g
   semicontramap f = to1 . semicontramap f . from1
-
+  {-# inline semicontramap #-}
 
 instance SemiHContravariant Proxy where
   semicontramap _ = coerce
@@ -163,22 +164,53 @@ instance (Functor f, SemiHContravariant g) => SemiHContravariant (Compose f g) w
 
 
 class SemiHContravariant t => SemiHDivisible t where
-  semidivide :: Divisible f => (forall a b c. f a -> (g b, h c)) -> t f -> t g -> t h
-  semilose :: (a -> Void) -> t f
+  semidivide :: Divisible f => (f a -> (g b, h c)) -> t f -> t g -> t h
+  semiconquer :: t f
 
 instance SemiHDivisible Proxy where
   semidivide _ _ _ = Proxy
-  semilose _ = Proxy
   {-# inline semidivide #-}
+
+  semiconquer = Proxy
+  {-# inline semiconquer #-}
 
 instance Monoid a => SemiHDivisible (Const a) where
   semidivide _ (Const a) (Const b) = Const (a <> b)
-  semilose _ = Const mempty
   {-# inline semidivide #-}
+
+  semiconquer = Const mempty
+  {-# inline semiconquer #-}
 
 instance Monoid a => SemiHDivisible (SemiHConst a) where
   semidivide _ (SemiHConst a) (SemiHConst b) = SemiHConst $ a <> b
-  semilose _ = SemiHConst mempty
   {-# inline semidivide #-}
 
+  semiconquer = SemiHConst mempty
+  {-# inline semiconquer #-}
+
+
 class SemiHDivisible t => SemiHDecidable t where
+  semichoose :: Decidable f => (f a -> Either (g b) (h c)) -> t f -> t g -> t h
+  semilose :: (forall x. f x -> Void) -> t f
+
+instance SemiHDecidable Proxy where
+  semichoose _ _ _ = Proxy
+  {-# inline semichoose #-}
+
+  semilose _ = Proxy
+  {-# inline semilose #-}
+
+instance Monoid a => SemiHDecidable (Const a) where
+  semichoose _ (Const a) (Const b) = Const (a <> b)
+  {-# inline semichoose #-}
+
+  semilose _ = Const mempty
+  {-# inline semilose #-}
+
+
+instance Monoid a => SemiHDecidable (SemiHConst a) where
+  semichoose _ (SemiHConst a) (SemiHConst b) = SemiHConst $ a <> b
+  {-# inline semichoose #-}
+
+  semilose _ = SemiHConst mempty
+  {-# inline semilose #-}
