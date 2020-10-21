@@ -29,12 +29,11 @@ import Data.Functor.Higher (SemiHFunctor, HFunctor(..))
 import Data.Functor.Higher.Const
 import Data.Functor.Higher.Identity
 import Data.Functor.Higher.Applied
-import Data.Functor
+import Data.Functor ((<&>))
 import Data.Proxy
 import Data.Functor.Const
 import Data.Coerce
 import GHC.Generics
-import Data.Functor.Compose
 
 
 infixl 1 >>>=
@@ -56,8 +55,11 @@ class HFunctor t => HMonad t where
   hjoin :: (Monad f, Monad (t f)) => t (t f) ~> t f
   hjoin t = hbind t id
   {-# inlinable hjoin #-}
-  {-# minimal hreturn, (hjoin | hbind) #-}
 
+  hbound :: (Monad f, Monad (t f)) => t f a -> (a -> f b) -> t f b
+  hbound t k = t >>= hreturn . k
+  {-# inlinable hbound #-}
+  {-# minimal hreturn, (hjoin | hbind) #-}
 
 instance HMonad HIdentity where
   hreturn = HIdentity
