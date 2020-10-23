@@ -14,13 +14,16 @@ module Data.Function.Higher
 , type (~>)
 , type (<~)
 , type (<~>)
+  -- * Combinators
+, ($$-)
+, (-$$)
 ) where
 
 
 import Data.Kind (Type)
 
 
-infixr 0 ~>, <~>, <~
+infixr 0 ~>, <~>, <~, $$-, -$$
 
 -- | A synonym for 'NT'.
 --
@@ -60,3 +63,15 @@ type Nop :: (i -> Type) -> (i -> Type) -> i -> Type
 type role Nop nominal nominal nominal
 newtype Nop f g a where
   Nop :: { runNop :: (f <~ g) } -> Nop f g a
+
+-- | Evaluate a component of a natural transformation of functors
+-- with common polarity at some concrete value.
+--
+($$-) :: NT f g a -> f a -> g a
+NT fg $$- f = fg f
+
+-- | Evaluate a component of a natural transformation of functors
+-- with mixed polarity at some concrete value.
+--
+(-$$) :: Nop f g a -> g a -> f a
+Nop gf -$$ g = gf g

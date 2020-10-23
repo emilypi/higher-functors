@@ -12,6 +12,10 @@ module Data.Monad.Higher
 ( HMonad(..)
 , (>>>=)
 , (=<<<)
+, bound
+, generalize
+, morph
+, transmogrify
 ) where
 
 
@@ -24,8 +28,9 @@ import Control.Monad.Trans.Maybe (MaybeT(..))
 import Control.Monad.Trans.Reader (ReaderT(..))
 import Control.Monad.Trans.Writer (WriterT(..))
 
+import Data.Functor.Identity
 import Data.Function.Higher
-import Data.Functor.Higher (SemiHFunctor, HFunctor(..))
+import Data.Functor.Higher (semimap, SemiHFunctor, HFunctor(..))
 import Data.Functor.Higher.Const
 import Data.Functor.Higher.Identity
 import Data.Functor.Higher.Applied
@@ -34,7 +39,6 @@ import Data.Proxy
 import Data.Functor.Const
 import Data.Coerce
 import GHC.Generics
-
 
 infixl 1 >>>=
 infixr 1 =<<<
@@ -56,10 +60,6 @@ class HFunctor t => HMonad t where
   hjoin t = hbind t id
   {-# inlinable hjoin #-}
 
-  hbound :: (Monad f, Monad (t f)) => t f a -> (a -> f b) -> t f b
-  hbound t k = t >>= hreturn . k
-  {-# inlinable hbound #-}
-  {-# minimal hreturn, (hjoin | hbind) #-}
 
 instance HMonad HIdentity where
   hreturn = HIdentity
@@ -115,9 +115,8 @@ instance HMonad (ExceptT e) where
       go (Right (Right t)) = Right t
   {-# inlinable hjoin #-}
 
-
 -- -------------------------------------------------------------------- --
--- Combinators
+-- HFunctor Combinators
 
 (>>>=) :: (HMonad t, Monad f, Monad g, Monad (t g)) => t f a -> (f ~> t g) -> t g a
 t >>>= k = hbind t k
@@ -127,8 +126,16 @@ t >>>= k = hbind t k
 k =<<< t = hbind t k
 {-# inlinable (=<<<) #-}
 
+bound :: (HMonad t, Monad f, Monad (t f)) => t f a -> (a -> f b) -> t f b
+bound t k = t >>= hreturn . k
+{-# inlinable bound #-}
+
+generalize :: Monad m => Identity ~> m
+generalize = runHIdentity . hmap (return . runIdentity) . HIdentity
+{-# inlinable generalize #-}
+
 -- -------------------------------------------------------------------- --
--- Type-indexed monads
+-- Type-constructor indexed monads
 
 class SemiHFunctor t => SemiHBind t where
   semibind :: (Monad m, Monad n) => t m -> (forall a. m a -> t n) -> t n
@@ -157,3 +164,19 @@ instance SemiHBind f => SemiHBind (Rec1 f) where
 
 instance SemiHBind f => SemiHBind (M1 i c f) where
   semibind (M1 a) k = M1 $ semibind a (coerce . k)
+
+-- -------------------------------------------------------------------- --
+-- SemiHFunctor combinators
+
+morph :: (HMonad t, SemiHBind u, Monad m, Monad (t m)) => u (t (t m)) -> u (t m)
+morph = semimap hjoin
+
+transmogrify
+  :: HMonad t
+  => SemiHBind u
+  => Monad m
+  => Monad n
+  => Monad (t m)
+  => Monad (t n)
+  => u (t m) -> (m ~> t n) -> u (t n)
+transmogrify u k = semimap (\t -> hbind t k) u

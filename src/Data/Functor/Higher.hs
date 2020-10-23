@@ -186,7 +186,6 @@ instance (SemiHFunctor f, SemiHFunctor g) => SemiHFunctor (f :*: g) where
   semimap f (a :*: b) = semimap f a :*: semimap f b
   {-# inline semimap #-}
 
--- (f :.: g) a = f (g a), f must be (regular) Functor
 instance (Functor f, SemiHFunctor g) => SemiHFunctor (f :.: g) where
   semimap f (Comp1 a) = Comp1 (fmap (semimap f) a)
   {-# inline semimap #-}
